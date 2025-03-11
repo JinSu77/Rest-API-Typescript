@@ -1,0 +1,8 @@
+.env
+database
+node_modules
+.data
+.idea
+assets
+config/signing/*
+
