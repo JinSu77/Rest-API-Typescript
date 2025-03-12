@@ -9,7 +9,7 @@ const READ_COLUMNS = ['id', 'first_name', 'last_name', 'email_address'];
  * Un utilisateur de la plateforme.
  */
 @Route("/user")
-// @Security('jwt')
+@Security('jwt')
 export class UserController {
 
   /**

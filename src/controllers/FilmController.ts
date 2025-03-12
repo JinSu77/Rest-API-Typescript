@@ -13,10 +13,7 @@ const READ_COLUMNS = ['film_id', 'title', 'description', 'release_year', 'langua
 export class FilmController {
     
     /**
-     * 
-     * @param page 
-     * @param limit 
-     * @returns 
+     * Récupération de tous les films
      */
     @Get()
     public async getFilms(
@@ -31,9 +28,7 @@ export class FilmController {
     }
 
     /**
-     * 
-     * @param id 
-     * @returns 
+     * Récupération d'un seul film
      */
     @Get('{id}')
     public async readUser(
@@ -48,9 +43,7 @@ export class FilmController {
     }
 
     /**
-     * 
-     * @param body 
-     * @returns 
+     * Création d'un film
      */
     @Put()
     public async createFilm(
@@ -63,10 +56,7 @@ export class FilmController {
     }
 
     /**
-     * 
-     * @param id 
-     * @param body 
-     * @returns 
+     * Mise à jour d'un film
      */
     @Patch('{id}')
     public async updateFilm(
@@ -82,9 +72,7 @@ export class FilmController {
     }
 
     /**
-     * 
-     * @param id 
-     * @returns 
+     * Supprime un film
      */
     @Delete('{id}')
     public async deleteFilm(

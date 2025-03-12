@@ -4,12 +4,32 @@ import { json } from 'body-parser';
 import { DefaultErrorHandler } from "@error/error-handler.middleware";
 import { RegisterRoutes } from "@routes/routes";
 import * as swaggerUi from "swagger-ui-express";
+import { DB } from "@orm/db";
 
 // Récupérer le port des variables d'environnement ou préciser une valeur par défaut
 const PORT = process.env.PORT || 5050;
 
 // Créer l'objet Express
 const app = Express();
+
+app.get('/info', async (request: Request, response: Response, next: NextFunction) => {
+  try {
+    const db = DB.Connection;
+    await db.query('SELECT 1');
+    response.json({
+      status: 'UP',
+      database: 'Connected',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error: any) {
+    response.status(500).json({
+      status: 'DOWN',
+      database: 'Disconnected',
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
 
 // Servir le contenu static du dossier `public`
 app.use(Express.static("public"));

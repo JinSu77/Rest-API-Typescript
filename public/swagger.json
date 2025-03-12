@@ -473,7 +473,11 @@
 					}
 				},
 				"description": "Récupérer une page d'utilisateurs.",
-				"security": [],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
 				"parameters": [
 					{
 						"description": "La page (zéro-index) à récupérer",
@@ -512,7 +516,11 @@
 					}
 				},
 				"description": "Récupérer une utilisateur avec le ID passé dans le URL",
-				"security": [],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
 				"parameters": [
 					{
 						"in": "path",
@@ -540,7 +548,11 @@
 					}
 				},
 				"description": "Mettre à jour un utilisateur avec le ID passé dans le URL",
-				"security": [],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
 				"parameters": [
 					{
 						"in": "path",
@@ -578,7 +590,11 @@
 					}
 				},
 				"description": "Supprimer un utilisateur",
-				"security": [],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
 				"parameters": [
 					{
 						"in": "path",
@@ -607,6 +623,7 @@
 						}
 					}
 				},
+				"description": "Récupération de tous les films",
 				"security": [],
 				"parameters": [
 					{
@@ -641,6 +658,7 @@
 						}
 					}
 				},
+				"description": "Création d'un film",
 				"security": [],
 				"parameters": [],
 				"requestBody": {
@@ -670,6 +688,7 @@
 						}
 					}
 				},
+				"description": "Récupération d'un seul film",
 				"security": [],
 				"parameters": [
 					{
@@ -697,6 +716,7 @@
 						}
 					}
 				},
+				"description": "Mise à jour d'un film",
 				"security": [],
 				"parameters": [
 					{
@@ -734,6 +754,7 @@
 						}
 					}
 				},
+				"description": "Supprime un film",
 				"security": [],
 				"parameters": [
 					{
