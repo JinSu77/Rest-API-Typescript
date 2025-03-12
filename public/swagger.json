@@ -413,6 +413,63 @@
 			"IFilmUpdate": {
 				"$ref": "#/components/schemas/Partial_IFilmCreate_"
 			},
+			"IActor": {
+				"properties": {
+					"actor_id": {
+						"type": "number",
+						"format": "double"
+					},
+					"first_name": {
+						"type": "string"
+					},
+					"last_name": {
+						"type": "string"
+					},
+					"last_update": {
+						"type": "string",
+						"format": "date-time"
+					}
+				},
+				"required": [
+					"actor_id",
+					"first_name",
+					"last_name",
+					"last_update"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"IORMIndexResponse_IActor_": {
+				"description": "Réspone à une opération de lecture de plusieurs lignes.",
+				"properties": {
+					"page": {
+						"type": "number",
+						"format": "double"
+					},
+					"limit": {
+						"type": "number",
+						"format": "double"
+					},
+					"total": {
+						"type": "number",
+						"format": "double"
+					},
+					"rows": {
+						"items": {
+							"$ref": "#/components/schemas/IActor"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"page",
+					"limit",
+					"total",
+					"rows"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"Pick_IUser.Exclude_keyofIUser.id__": {
 				"properties": {
 					"first_name": {
@@ -623,7 +680,7 @@
 						}
 					}
 				},
-				"description": "Récupération de tous les films",
+				"description": "Récupération de tous les films avec une pagination et limite",
 				"security": [],
 				"parameters": [
 					{
@@ -760,6 +817,75 @@
 					{
 						"in": "path",
 						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/film/{id}/actor": {
+			"get": {
+				"operationId": "GetFilmActors",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/IORMIndexResponse_IActor_"
+								}
+							}
+						}
+					}
+				},
+				"description": "Récupère tous les acteurs d'un film",
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		},
+		"/film/{id}/actor/{actorId}": {
+			"get": {
+				"operationId": "GetFilmActor",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/IActor"
+								}
+							}
+						}
+					}
+				},
+				"description": "Récupère un acteur spécifique d'un film",
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					},
+					{
+						"in": "path",
+						"name": "actorId",
 						"required": true,
 						"schema": {
 							"format": "double",

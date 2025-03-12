@@ -8,6 +8,8 @@ import { UserController } from './../controllers/UsersController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { FilmController } from './../controllers/FilmController';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { FilmActorController } from './../controllers/FilmActorController';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { AuthController } from './../controllers/AuthController';
 import { expressAuthentication } from './../utility/auth/authentication.middleware';
 // @ts-ignore - no great way to install types from subpackage
@@ -131,6 +133,28 @@ const models: TsoaRoute.Models = {
     "IFilmUpdate": {
         "dataType": "refAlias",
         "type": {"ref":"Partial_IFilmCreate_","validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "IActor": {
+        "dataType": "refObject",
+        "properties": {
+            "actor_id": {"dataType":"double","required":true},
+            "first_name": {"dataType":"string","required":true},
+            "last_name": {"dataType":"string","required":true},
+            "last_update": {"dataType":"datetime","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "IORMIndexResponse_IActor_": {
+        "dataType": "refObject",
+        "properties": {
+            "page": {"dataType":"double","required":true},
+            "limit": {"dataType":"double","required":true},
+            "total": {"dataType":"double","required":true},
+            "rows": {"dataType":"array","array":{"dataType":"refObject","ref":"IActor"},"required":true},
+        },
+        "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Pick_IUser.Exclude_keyofIUser.id__": {
@@ -432,6 +456,67 @@ export function RegisterRoutes(app: Router) {
 
               await templateService.apiHandler({
                 methodName: 'deleteFilm',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsFilmActorController_getFilmActors: Record<string, TsoaRoute.ParameterSchema> = {
+                id: {"in":"path","name":"id","required":true,"dataType":"double"},
+        };
+        app.get('/film/:id/actor',
+            ...(fetchMiddlewares<RequestHandler>(FilmActorController)),
+            ...(fetchMiddlewares<RequestHandler>(FilmActorController.prototype.getFilmActors)),
+
+            async function FilmActorController_getFilmActors(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsFilmActorController_getFilmActors, request, response });
+
+                const controller = new FilmActorController();
+
+              await templateService.apiHandler({
+                methodName: 'getFilmActors',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsFilmActorController_getFilmActor: Record<string, TsoaRoute.ParameterSchema> = {
+                id: {"in":"path","name":"id","required":true,"dataType":"double"},
+                actorId: {"in":"path","name":"actorId","required":true,"dataType":"double"},
+        };
+        app.get('/film/:id/actor/:actorId',
+            ...(fetchMiddlewares<RequestHandler>(FilmActorController)),
+            ...(fetchMiddlewares<RequestHandler>(FilmActorController.prototype.getFilmActor)),
+
+            async function FilmActorController_getFilmActor(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsFilmActorController_getFilmActor, request, response });
+
+                const controller = new FilmActorController();
+
+              await templateService.apiHandler({
+                methodName: 'getFilmActor',
                 controller,
                 response,
                 next,

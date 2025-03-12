@@ -4,6 +4,7 @@ import { DbTable } from "@model/DbTable";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { DB } from "./db";
 import { IORMCreateResponse, IORMIndexRequest, IORMIndexResponse, IORMCreateRequest, IORMTableCount, IORMUpdateResponse, IORMReadRequest, IORMUpdateRequest } from "./interfaces/IORM";
+import { IActor } from "@model/types/IActor";
 
 
 /**
@@ -114,6 +115,54 @@ export class ORM {
       id: options.idValue,
       rows: data[0].affectedRows
     }  
+  }
+
+
+  /**
+   * Récupère tous les acteurs d'un film spécifique
+   */
+    public static async GetAllActorsFromFilm(filmId: number): Promise<IORMIndexResponse<IActor>> {
+      const db = DB.Connection;
+      const columns = ['a.actor_id', 'a.first_name', 'a.last_name', 'a.last_update'];
+      
+      const query = `
+        SELECT ${columns.join(',')}
+        FROM film_actor fa
+        JOIN actor a ON fa.actor_id = a.actor_id
+        WHERE fa.film_id = ?
+      `;
+      
+      const [actors] = await db.query<(IActor & RowDataPacket)[]>(query, [filmId]);
+      
+      return {
+        page: 0,
+        limit: actors.length,
+        total: actors.length,
+        rows: actors
+      };
+    }
+
+  /**
+   * Récupère un acteur spécifique d'un film donné
+   */
+  public static async GetSingleActorFromFilm(filmId: number, actorId: number): Promise<IActor> {
+    const db = DB.Connection;
+    const columns = ['a.actor_id', 'a.first_name', 'a.last_name', 'a.last_update'];
+    
+    const query = `
+      SELECT ${columns.join(',')}
+      FROM film_actor fa
+      JOIN actor a ON fa.actor_id = a.actor_id
+      WHERE fa.film_id = ? AND fa.actor_id = ?
+    `;
+    
+    const [actors] = await db.query<(IActor & RowDataPacket)[]>(query, [filmId, actorId]);
+    
+    if (actors.length === 0) {
+      throw new ApiError(ErrorCode.BadRequest, 'sql/not-found', `L'acteur ${actorId} n'existe pas dans le film ${filmId}`);
+    }
+    
+    return actors[0];
   }
 
 }

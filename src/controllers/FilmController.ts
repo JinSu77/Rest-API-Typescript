@@ -13,7 +13,7 @@ const READ_COLUMNS = ['film_id', 'title', 'description', 'release_year', 'langua
 export class FilmController {
     
     /**
-     * Récupération de tous les films
+     * Récupération de tous les films avec une pagination et limite
      */
     @Get()
     public async getFilms(
