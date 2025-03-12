@@ -1,15 +1,15 @@
-import { IUser, IUserCreate, IUserUpdate } from '@model/types/IUser';
-import { IORMCreateResponse, IORMDeleteResponse, IORMIndexResponse, IORMUpdateResponse } from '@orm/interfaces/IORM';
+import { IUser, IUserUpdate } from '@model/types/IUser';
+import { IORMDeleteResponse, IORMIndexResponse, IORMUpdateResponse } from '@orm/interfaces/IORM';
 import { ORM } from '@orm/ORM';
-import { Body, Delete, Get, Patch, Path, Put, Query, Route, Security } from 'tsoa';
+import { Body, Delete, Get, Patch, Path, Query, Route, Security } from 'tsoa';
 
-const READ_COLUMNS = ['userId', 'familyName', 'givenName', 'email'];
+const READ_COLUMNS = ['id', 'first_name', 'last_name', 'email_address'];
 
 /**
  * Un utilisateur de la plateforme.
  */
 @Route("/user")
-@Security('jwt')
+// @Security('jwt')
 export class UserController {
 
   /**
@@ -23,36 +23,23 @@ export class UserController {
     @Query() limit?: string,    
   ): Promise<IORMIndexResponse<IUser>> {    
     return ORM.Index<IUser>({
-      table: 'user',
+      table: 'users',
       columns: READ_COLUMNS,
       query: { page, limit },
     });
   }
 
   /**
-   * Créer un nouvel utilisateur
-   */
-  @Put()
-  public async createUser(
-    @Body() body: IUserCreate
-  ): Promise<IORMCreateResponse> {
-    return ORM.Create<IUserCreate>({
-      table: 'user',
-      body,
-    });
-  }
-
-  /**
    * Récupérer une utilisateur avec le ID passé dans le URL
    */
-  @Get('{userId}')
+  @Get('{id}')
   public async readUser(
-    @Path() userId: number
+    @Path() id: number
   ): Promise<IUser> {
     return ORM.Read<IUser>({
-      table: 'user', 
-      idKey: 'userId', 
-      idValue: userId, 
+      table: 'users', 
+      idKey: 'id', 
+      idValue: id, 
       columns: READ_COLUMNS
     });
   }
@@ -60,15 +47,15 @@ export class UserController {
   /**
    * Mettre à jour un utilisateur avec le ID passé dans le URL
    */
-  @Patch('{userId}')
+  @Patch('{id}')
   public async updateUser(
-    @Path() userId: number,
+    @Path() id: number,
     @Body() body: IUserUpdate
   ): Promise<IORMUpdateResponse> {
     return ORM.Update<IUserUpdate>({
-      table: 'user',
-      idKey: 'userId', 
-      idValue: userId, 
+      table: 'users',
+      idKey: 'id', 
+      idValue: id, 
       body,
     });
   }
@@ -76,14 +63,14 @@ export class UserController {
   /**
    * Supprimer un utilisateur
    */
-  @Delete('{userId}')
+  @Delete('{id}')
   public async deleteUser(
-    @Path() userId: number,
+    @Path() id: number,
   ): Promise<IORMDeleteResponse> {
     return ORM.Delete({
-      table: 'user', 
-      idKey: 'userId', 
-      idValue: userId, 
+      table: 'users', 
+      idKey: 'id', 
+      idValue: id, 
     });
   }
 }

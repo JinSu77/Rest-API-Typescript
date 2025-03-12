@@ -1,6 +1,7 @@
 import { ApiError } from "@error/ApiError";
 import { ErrorCode } from "@error/ErrorCode";
-import { IUserRO } from "@model/types/IUser";
+import { IUser, IUserCreate, IUserRO } from "@model/types/IUser";
+import { IORMCreateResponse } from "@orm/interfaces/IORM";
 import { ORM } from "@orm/ORM";
 import { Body, Get, Post, Query, Route } from 'tsoa';
 import { IAccessToken } from "utility/auth/IAccessToken";
@@ -10,6 +11,16 @@ import { JWT_ACCESS_AUD, JWT_EMAIL_LINK_AUD, JWT_ISSUER } from "utility/JWT/JWTC
 
 @Route("/auth")
 export class AuthController {
+
+  @Post("/register")
+  public async Register(
+    @Body() body: IUserCreate
+  ): Promise<IORMCreateResponse> {
+    return ORM.Create<IUserCreate>({
+      table: 'users',
+      body,
+    });
+  }
   
   @Post("/login")
   public async sendMagicLink(  
@@ -22,17 +33,17 @@ export class AuthController {
   ): Promise<{ ok: boolean}> {    
     // Vérifier si on a un utilisateur avec l'adresse email dans notre base
     const user = await ORM.Read<IUserRO>({
-      table: 'user',
-      idKey: 'email',
+      table: 'users',
+      idKey: 'email_address',
       idValue: body.email,
-      columns: ['userId', 'email']
+      columns: ['id', 'email_address']
     });
 
    
     // Create the new JWT
     const jwt = new JWT();
     const encoded = await jwt.create({
-      userId: user.userId,
+      userId: user.id,
     }, {
       expiresIn: '30 minutes',
       audience: JWT_EMAIL_LINK_AUD,
@@ -64,20 +75,20 @@ export class AuthController {
       audience: JWT_EMAIL_LINK_AUD,
     });
 
-    if (!decoded.userId) {
+    if (!decoded.id) {
       throw new ApiError(ErrorCode.Unauthorized, 'auth/invalid-authorize-link-token', "userId was not found in the payload for token");
     }
 
     // Vérifier que l'utilisateur existe toujours
     const user = await ORM.Read<IUserRO>({
-      table: 'user',
-      idKey: 'userId',
-      idValue: decoded.userId,
-      columns: ['userId']
+      table: 'users',
+      idKey: 'id',
+      idValue: decoded.id,
+      columns: ['id']
     });
 
     let payload: IAccessToken = {
-      userId: user.userId
+      userId: user.id
       /** @todo: Ajouter des rôle(s) ici ! */
     };    
 

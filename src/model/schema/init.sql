@@ -1,9 +1,9 @@
 /*
-Script de création de la base de données `school`.
+Script de création de la base de données `sakila`.
 */
-create database IF NOT EXISTS school;
+create database IF NOT EXISTS sakila;
 
 /* Créer l'utilisateur API */
 create user IF NOT EXISTS 'api-dev'@'%.%.%.%' identified by 'api-dev-password';
-grant select, update, insert, delete on school.* to 'api-dev'@'%.%.%.%';
+grant select, update, insert, delete on sakila.* to 'api-dev'@'%.%.%.%';
 flush privileges;

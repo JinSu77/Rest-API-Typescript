@@ -1,13 +1,13 @@
 /* La définition de la schéma */
-use school;
+use sakila;
 
 /* user */
 create table if not exists user (
-  userId int auto_increment not null,
-  email varchar(256) unique not null, 
-  familyName varchar(256), 
-  givenName varchar(256), 
-  primary key(userId)
+  id int auto_increment not null,
+  email_address varchar(256) unique not null, 
+  first_name varchar(256), 
+  last_name varchar(256), 
+  primary key(id)
 );
 
 drop trigger if exists before_insert_user;
