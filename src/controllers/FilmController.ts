@@ -45,6 +45,7 @@ export class FilmController {
     /**
      * Création d'un film
      */
+    @Security('jwt', ['admin'])
     @Put()
     public async createFilm(
       @Body() body: IFilmCreate
@@ -58,6 +59,7 @@ export class FilmController {
     /**
      * Mise à jour d'un film
      */
+    @Security('jwt', ['admin'])
     @Patch('{id}')
     public async updateFilm(
       @Path() id: number,
@@ -74,6 +76,7 @@ export class FilmController {
     /**
      * Supprime un film
      */
+    @Security('jwt', ['admin'])
     @Delete('{id}')
     public async deleteFilm(
       @Path() id: number,

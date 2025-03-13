@@ -3,8 +3,6 @@ import { IActor } from "@model/types/IActor";
 import { IORMIndexResponse } from "@orm/interfaces/IORM";
 import { ORM } from "@orm/ORM";
 
-const READ_COLUMNS = ['a.actor_id', 'a.first_name', 'a.last_name', 'a.last_update'];
-
 @Route("/film/{id}/actor")
 // @Security('jwt')
 export class FilmActorController {

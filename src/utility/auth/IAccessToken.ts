@@ -1,3 +1,4 @@
 export interface IAccessToken {
-    id: number
+    id: number,
+    role: 'admin' | 'client'
   }

@@ -6,6 +6,7 @@ export interface IUser {
     first_name?: string;
     last_name?: string;
     email_address: string;
+    role_user: 'client' | 'admin';
   }
   
   // Outils de manipulation des types :

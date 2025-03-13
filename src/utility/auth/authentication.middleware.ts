@@ -24,7 +24,21 @@ export async function expressAuthentication(
       issuer: JWT_ISSUER,
       audience: JWT_ACCESS_AUD,
     });
-    
+    if (scopes?.length) {
+
+      const userScope = decoded.role;
+
+      for (let scope of scopes) {
+        if (!userScope.includes(scope)) {
+          throw new ApiError(
+            ErrorCode.Forbidden,
+            'authentification/role-requires',
+            'Auth user is not authorized here'
+          )
+        }
+      }
+    }
+
     return decoded;
   }
 

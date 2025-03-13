@@ -30,13 +30,13 @@ export class AuthController {
        */
       email: string;
     }
-  ): Promise<{ ok: boolean}> {    
+  ): Promise<{ ok: boolean, token: string}> {    
     // Vérifier si on a un utilisateur avec l'adresse email dans notre base
     const user = await ORM.Read<IUserRO>({
       table: 'users',
       idKey: 'email_address',
       idValue: body.email,
-      columns: ['id', 'email_address']
+      columns: ['id', 'email_address', 'role_user']
     });
 
    
@@ -44,6 +44,7 @@ export class AuthController {
     const jwt = new JWT();
     const encoded = await jwt.create({
       id: user.id,
+      role: user.role_user
     }, {
       expiresIn: '30 minutes',
       audience: JWT_EMAIL_LINK_AUD,
@@ -56,9 +57,16 @@ export class AuthController {
     await emailer.sendMagicLink(body.email, link, 'Mon service');
 
     return {
-      ok: true
+      ok: true,
+      token: encoded
     };
   }
+
+  @Post('/renew')
+  public async refreshToken(){
+    //Logique pour refresh le token qui à expirer, dans le body on lui fourni le token qui à
+  }
+
 
   @Get("/authorize")
   public async authorizeFromLink(  
@@ -84,11 +92,12 @@ export class AuthController {
       table: 'users',
       idKey: 'id',
       idValue: decoded.id,
-      columns: ['id']
+      columns: ['id', 'role_user']
     });
 
     let payload: IAccessToken = {
-      id: user.id
+      id: user.id,
+      role: user.role_user
       /** @todo: Ajouter des rôle(s) ici ! */
     };    
 

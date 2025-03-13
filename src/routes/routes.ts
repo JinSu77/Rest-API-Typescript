@@ -28,6 +28,7 @@ const models: TsoaRoute.Models = {
             "first_name": {"dataType":"string"},
             "last_name": {"dataType":"string"},
             "email_address": {"dataType":"string","required":true},
+            "role_user": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["client"]},{"dataType":"enum","enums":["admin"]}],"required":true},
         },
         "additionalProperties": false,
     },
@@ -54,7 +55,7 @@ const models: TsoaRoute.Models = {
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Partial_IUserCreate_": {
         "dataType": "refAlias",
-        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"first_name":{"dataType":"string"},"last_name":{"dataType":"string"},"email_address":{"dataType":"string"}},"validators":{}},
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"first_name":{"dataType":"string"},"last_name":{"dataType":"string"},"email_address":{"dataType":"string"},"role_user":{"dataType":"union","subSchemas":[{"dataType":"enum","enums":["client"]},{"dataType":"enum","enums":["admin"]}]}},"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "IUserUpdate": {
@@ -159,7 +160,7 @@ const models: TsoaRoute.Models = {
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Pick_IUser.Exclude_keyofIUser.id__": {
         "dataType": "refAlias",
-        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"first_name":{"dataType":"string"},"last_name":{"dataType":"string"},"email_address":{"dataType":"string","required":true}},"validators":{}},
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"first_name":{"dataType":"string"},"last_name":{"dataType":"string"},"email_address":{"dataType":"string","required":true},"role_user":{"dataType":"union","subSchemas":[{"dataType":"enum","enums":["client"]},{"dataType":"enum","enums":["admin"]}],"required":true}},"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Omit_IUser.id_": {
@@ -380,6 +381,7 @@ export function RegisterRoutes(app: Router) {
                 body: {"in":"body","name":"body","required":true,"ref":"IFilmCreate"},
         };
         app.put('/film',
+            authenticateMiddleware([{"jwt":["admin"]}]),
             ...(fetchMiddlewares<RequestHandler>(FilmController)),
             ...(fetchMiddlewares<RequestHandler>(FilmController.prototype.createFilm)),
 
@@ -411,6 +413,7 @@ export function RegisterRoutes(app: Router) {
                 body: {"in":"body","name":"body","required":true,"ref":"IFilmUpdate"},
         };
         app.patch('/film/:id',
+            authenticateMiddleware([{"jwt":["admin"]}]),
             ...(fetchMiddlewares<RequestHandler>(FilmController)),
             ...(fetchMiddlewares<RequestHandler>(FilmController.prototype.updateFilm)),
 
@@ -441,6 +444,7 @@ export function RegisterRoutes(app: Router) {
                 id: {"in":"path","name":"id","required":true,"dataType":"double"},
         };
         app.delete('/film/:id',
+            authenticateMiddleware([{"jwt":["admin"]}]),
             ...(fetchMiddlewares<RequestHandler>(FilmController)),
             ...(fetchMiddlewares<RequestHandler>(FilmController.prototype.deleteFilm)),
 
@@ -577,6 +581,35 @@ export function RegisterRoutes(app: Router) {
 
               await templateService.apiHandler({
                 methodName: 'sendMagicLink',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsAuthController_refreshToken: Record<string, TsoaRoute.ParameterSchema> = {
+        };
+        app.post('/auth/renew',
+            ...(fetchMiddlewares<RequestHandler>(AuthController)),
+            ...(fetchMiddlewares<RequestHandler>(AuthController.prototype.refreshToken)),
+
+            async function AuthController_refreshToken(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsAuthController_refreshToken, request, response });
+
+                const controller = new AuthController();
+
+              await templateService.apiHandler({
+                methodName: 'refreshToken',
                 controller,
                 response,
                 next,

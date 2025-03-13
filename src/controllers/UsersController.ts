@@ -3,7 +3,7 @@ import { IORMDeleteResponse, IORMIndexResponse, IORMUpdateResponse } from '@orm/
 import { ORM } from '@orm/ORM';
 import { Body, Delete, Get, Patch, Path, Query, Route, Security } from 'tsoa';
 
-const READ_COLUMNS = ['id', 'first_name', 'last_name', 'email_address'];
+const READ_COLUMNS = ['id', 'first_name', 'last_name', 'email_address', 'role_user'];
 
 /**
  * Un utilisateur de la plateforme.
