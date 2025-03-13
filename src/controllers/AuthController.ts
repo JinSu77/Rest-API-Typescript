@@ -1,6 +1,6 @@
 import { ApiError } from "@error/ApiError";
 import { ErrorCode } from "@error/ErrorCode";
-import { IUser, IUserCreate, IUserRO } from "@model/types/IUser";
+import { IUserCreate, IUserRO } from "@model/types/IUser";
 import { IORMCreateResponse } from "@orm/interfaces/IORM";
 import { ORM } from "@orm/ORM";
 import { Body, Get, Post, Query, Route } from 'tsoa';
@@ -43,7 +43,7 @@ export class AuthController {
     // Create the new JWT
     const jwt = new JWT();
     const encoded = await jwt.create({
-      userId: user.id,
+      id: user.id,
     }, {
       expiresIn: '30 minutes',
       audience: JWT_EMAIL_LINK_AUD,
@@ -88,7 +88,7 @@ export class AuthController {
     });
 
     let payload: IAccessToken = {
-      userId: user.id
+      id: user.id
       /** @todo: Ajouter des rôle(s) ici ! */
     };    
 
