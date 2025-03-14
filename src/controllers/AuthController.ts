@@ -7,7 +7,7 @@ import { Body, Get, Post, Query, Route } from 'tsoa';
 import { IAccessToken } from "utility/auth/IAccessToken";
 import { Emailer } from "utility/email/Emailer";
 import { JWT } from "utility/JWT/JWT";
-import { JWT_ACCESS_AUD, JWT_EMAIL_LINK_AUD, JWT_ISSUER } from "utility/JWT/JWTConstants";
+import { JWT_ACCESS_AUD, JWT_EMAIL_LINK_AUD, JWT_ISSUER, JWT_RENEW_AUD } from "utility/JWT/JWTConstants";
 
 @Route("/auth")
 export class AuthController {
@@ -63,8 +63,53 @@ export class AuthController {
   }
 
   @Post('/renew')
-  public async refreshToken(){
-    //Logique pour refresh le token qui à expirer, dans le body on lui fourni le token qui à
+  public async refreshToken(
+    @Body() body: {
+      refresh_token: string
+    }
+  ): Promise<{
+    access: string;
+    refresh: string;
+  }> {
+    const helper = new JWT();
+    
+    // Vérifie le refresh token
+    const decoded = await helper.decodeAndVerify<IAccessToken>(body.refresh_token, {
+      issuer: JWT_ISSUER,
+      audience: JWT_RENEW_AUD,
+    });
+
+    // Vérifie que l'utilisateur existe toujours et récupère ses rôles à jour
+    const user = await ORM.Read<IUserRO>({
+      table: 'users',
+      idKey: 'id',
+      idValue: decoded.id,
+      columns: ['id', 'role_user']
+    });
+
+    const payload: IAccessToken = {
+      id: user.id,
+      role: user.role_user
+    };
+
+    // Crée un nouveau access token
+    const access = await helper.create(payload, {
+      expiresIn: '5 minutes',
+      issuer: JWT_ISSUER,
+      audience: JWT_ACCESS_AUD,
+    });
+
+    // Crée un nouveau refresh token
+    const refresh = await helper.create(payload, {
+      expiresIn: '7 days',
+      issuer: JWT_ISSUER,
+      audience: JWT_RENEW_AUD,
+    });
+
+    return {
+      access,
+      refresh
+    };
   }
 
 
@@ -73,6 +118,7 @@ export class AuthController {
     @Query() jwt: string
   ): Promise<{ 
     access: string;
+    refresh: string;
     redirectTo: string;
     message: string;
   }> {    
@@ -102,13 +148,20 @@ export class AuthController {
     };    
 
     const access = await helper.create(payload, {
-      expiresIn: '12 hours',
+      expiresIn: '5 minutes',
       issuer: JWT_ISSUER,
       audience: JWT_ACCESS_AUD,
     }) as string;
 
+    const refresh = await helper.create(payload, {
+      expiresIn: '7 days',
+      issuer: JWT_ISSUER,
+      audience: JWT_RENEW_AUD,
+    }) as string;
+
     return {
-      access: access,
+      access,
+      refresh,
       redirectTo: 'https://lien.vers.mon.front',
       message: 'Normalement ce endpoint va demander au navigateur de rediriger vers votre site ou ressource'
     };
