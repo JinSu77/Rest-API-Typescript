@@ -1,0 +1,27 @@
+FROM node:22-alpine AS api-builder
+WORKDIR /app
+
+COPY . .
+
+# Installation des dépendances et build
+RUN npm install 
+RUN npm run clean
+RUN npm run build
+
+FROM node:22-alpine AS api
+WORKDIR /app
+
+# Installation des dépendances pour la génération des clés
+RUN apk add --no-cache openssh openssl
+
+# Copie des fichiers nécessaires
+COPY --from=api-builder /app/build ./
+COPY package.json ./
+COPY package-lock.json ./
+COPY config ./config
+
+# Installation des dépendances de production uniquement
+RUN npm install
+
+# Commande de démarrage
+CMD ["npm", "run", "start-api"]

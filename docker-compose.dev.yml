@@ -1,22 +1,27 @@
 services:
-  vscode_api:
-    image: rg.fr-par.scw.cloud/api-code-samples-vscode/vscode_api:2.0.1
-    command: /bin/bash -c "while sleep 1000; do :; done"
-    working_dir: /home/dev
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api.dev
+    ports:
+      - "5050:5050"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - PRIVATE_KEY=AIJDAMOjijfdsoifjsmdigo
+      - PUBLIC_KEY=Qfjsfshdgmoiajg
+    restart: always
     networks:
       - api-network
-    volumes:
-      - ./:/home/dev:cached
-    labels:
-      api_logging: "true"
 
-  dbms:
+  database:
     image: mariadb
     restart: always
-    container_name: my_sql_database
     ports:
       - "3309:3306"
-    environment: 
+    environment:
       - MYSQL_ALLOW_EMPTY_PASSWORD=false
       - MYSQL_ROOT_PASSWORD=rootpassword
     command: [
@@ -24,7 +29,7 @@ services:
       "--collation-server=utf8mb4_unicode_ci",
     ]
     volumes:
-      - ./.data:/var/lib/mysql
+      - ./.database:/var/lib/mysql
       - ./database:/docker-entrypoint-initdb.d:ro
     networks:
       - api-network

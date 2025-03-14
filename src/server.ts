@@ -3,8 +3,11 @@ import { join } from 'path';
 import { json } from 'body-parser';
 import { DefaultErrorHandler } from "@error/error-handler.middleware";
 import { RegisterRoutes } from "@routes/routes";
-import * as swaggerUi from "swagger-ui-express";
+// import * as swaggerUi from "swagger-ui-express";
 import { DB } from "@orm/db";
+import { configDotenv } from "dotenv";
+
+configDotenv();
 
 // Récupérer le port des variables d'environnement ou préciser une valeur par défaut
 const PORT = process.env.PORT || 5050;
@@ -31,18 +34,18 @@ app.get('/info', async (request: Request, response: Response, next: NextFunction
   }
 });
 
-// Servir le contenu static du dossier `public`
-app.use(Express.static("public"));
-// Créer une route qui permet de convertir le .json en format html
-app.use(
-  "/docs",
-  swaggerUi.serve,
-  swaggerUi.setup(undefined, {
-    swaggerOptions: {
-      url: "/swagger.json",
-    },
-  })
-);
+// // Servir le contenu static du dossier `public`
+// app.use(Express.static("public"));
+// // Créer une route qui permet de convertir le .json en format html
+// app.use(
+//   "/docs",
+//   swaggerUi.serve,
+//   swaggerUi.setup(undefined, {
+//     swaggerOptions: {
+//       url: "/swagger.json",
+//     },
+//   })
+// );
 
 // Ajouter un 'middleware' lit du json dans le body
 app.use(json());
